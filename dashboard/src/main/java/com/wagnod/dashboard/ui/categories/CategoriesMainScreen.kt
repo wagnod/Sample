@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,24 +16,27 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.coil.CoilImage
 import com.wagnod.core.model.Category
 import com.wagnod.core.model.Item
-import com.wagnod.core.model.Product
 import com.wagnod.core_ui.navigators.main.Navigator
 import com.wagnod.core_ui.theme.SampleTheme
-import com.wagnod.core_ui.theme.footnoteRegular
 import com.wagnod.core_ui.theme.textPrimary
-import com.wagnod.core_ui.ui.toolbar.ToolbarTitle
-import com.wagnod.core_ui.ui.toolbar.ToolbarTop
 import com.wagnod.core_ui.ui.progress.CenterScreenProgressBar
 import com.wagnod.core_ui.ui.search_bar.ExpandableSearchView
+import com.wagnod.core_ui.ui.toolbar.ToolbarTitle
+import com.wagnod.core_ui.ui.toolbar.ToolbarTop
 import com.wagnod.dashboard.R
-import com.wagnod.dashboard.ui.categories.CategoriesContract.*
+import com.wagnod.dashboard.ui.categories.CategoriesContract.Event
+import com.wagnod.dashboard.ui.categories.CategoriesContract.Listener
+import com.wagnod.dashboard.ui.categories.CategoriesContract.SearchState
+import com.wagnod.dashboard.ui.categories.CategoriesContract.State
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -101,15 +105,17 @@ private fun CategoryView(
 ) = Column(
     modifier = Modifier
         .fillMaxWidth()
+        .clip(RoundedCornerShape(2.dp))
         .clickable { onClick.invoke() }
         .padding(vertical = 4.dp, horizontal = 16.dp)
         .background(MaterialTheme.colors.background)
 ) {
     CoilImage(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .width(100.dp)
+            .height(100.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .align(Alignment.CenterHorizontally),
         imageModel = { category.image },
         previewPlaceholder = R.drawable.product_placeholder
     )
@@ -119,6 +125,7 @@ private fun CategoryView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
+        textAlign = TextAlign.Center,
         color = MaterialTheme.colors.textPrimary,
         style = MaterialTheme.typography.body1
     )
@@ -141,7 +148,10 @@ private fun StoreSearch(state: State, listener: Listener?) = LazyVerticalGrid(
     modifier = Modifier.padding(16.dp)
 ) {
     items(state.searchItems) { item ->
-        ProductView(item = item, listener)
+        when (item) {
+            is Category -> CategoryListView(item, listener)
+            is Item -> ProductView(item)
+        }
     }
 }
 
@@ -158,12 +168,25 @@ private fun StoreCategories(state: State, listener: Listener?) = LazyVerticalGri
 }
 
 @Composable
-private fun ProductView(item: Product, listener: Listener?) = Column(
+private fun CategoryListView(item: Category, listener: Listener?) {
+    Text(
+        text = item.name,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
+            .clickable { listener?.onCategoryClick(item.name) }
+            .padding(8.dp),
+        color = MaterialTheme.colors.textPrimary,
+        style = MaterialTheme.typography.h1
+    )
+}
+
+@Composable
+private fun ProductView(item: Item) = Column(
     modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 4.dp, horizontal = 16.dp)
         .background(MaterialTheme.colors.background)
-        .clickable { if (item is Category) listener?.onCategoryClick(item.name) }
 ) {
     Text(
         text = item.name,
@@ -173,17 +196,6 @@ private fun ProductView(item: Product, listener: Listener?) = Column(
         color = MaterialTheme.colors.textPrimary,
         style = MaterialTheme.typography.body1
     )
-
-    if (item is Item) {
-        Text(
-            text = item.description,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            color = MaterialTheme.colors.textPrimary,
-            style = MaterialTheme.typography.footnoteRegular
-        )
-    }
 }
 
 /**
