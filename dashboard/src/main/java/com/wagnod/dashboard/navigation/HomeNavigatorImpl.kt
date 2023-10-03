@@ -19,10 +19,15 @@ class HomeNavigatorImpl : HomeNavigator {
         ProductsScreen.navigate(selectedCategory, navController)
     }
 
+    override fun toBasket() {
+        BasketScreen.navigate(Unit, navController)
+    }
+
     override fun graph(builder: NavGraphBuilder, navigator: Navigator) {
         builder.navigation(CategoriesScreen.route, CategoriesScreen.rootRoute) {
             CategoriesScreen.createScreen(builder, navigator)
             ProductsScreen.createScreen(builder, navigator)
+            BasketScreen.createScreen(builder, navigator)
         }
     }
 }

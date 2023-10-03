@@ -4,4 +4,5 @@ import com.wagnod.core_ui.navigators.module.ModuleNavigator
 
 interface HomeNavigator : ModuleNavigator {
     fun toProducts(selectedCategory: String)
+    fun toBasket()
 }

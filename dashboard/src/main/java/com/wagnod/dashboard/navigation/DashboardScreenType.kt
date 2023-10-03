@@ -4,5 +4,6 @@ import com.wagnod.core_ui.Keys
 
 enum class DashboardScreenType(val route: String) {
     CategoriesScreen("categories"),
-    ProductsScreen("product?selectedCategory={${Keys.ARG_SELECTED_CATEGORY}}")
+    ProductsScreen("product?selectedCategory={${Keys.ARG_SELECTED_CATEGORY}}"),
+    BasketScreen("basket")
 }

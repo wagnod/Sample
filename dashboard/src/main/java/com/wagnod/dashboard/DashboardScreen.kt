@@ -9,6 +9,7 @@ import com.wagnod.core_ui.Keys.ARG_SELECTED_CATEGORY
 import com.wagnod.core_ui.base_screen.Screen
 import com.wagnod.core_ui.navigators.main.Navigator
 import com.wagnod.dashboard.navigation.DashboardScreenType
+import com.wagnod.dashboard.ui.basket.BasketMainScreen
 import com.wagnod.dashboard.ui.categories.CategoriesMainScreen
 import com.wagnod.dashboard.ui.products.ProductsMainScreen
 
@@ -46,6 +47,19 @@ sealed class DashboardScreen<T>(
             ) {
                 val selected = it.arguments?.getString(ARG_SELECTED_CATEGORY) ?: ""
                 ProductsMainScreen(selected, navigator)
+            }
+        }
+    }
+
+    object BasketScreen : DashboardScreen<Unit>(DashboardScreenType.BasketScreen.route, rootRoute) {
+
+        override fun navigate(args: Unit, navController: NavController) {
+            navController.navigate(route)
+        }
+
+        override fun createScreen(navGraphBuilder: NavGraphBuilder, navigator: Navigator) {
+            navGraphBuilder.composable(route) {
+                BasketMainScreen(navigator)
             }
         }
     }
