@@ -6,6 +6,7 @@ import com.wagnod.core_ui.navigators.main.Navigator
 import com.wagnod.data.di.dataModule
 import com.wagnod.domain.di.domainModule
 import com.wagnod.dashboard.di.homeModule
+import com.wagnod.data.di.dataStoreModule
 import com.wagnod.navigation.NavigatorImpl
 import org.koin.dsl.module
 
@@ -30,4 +31,4 @@ val dataModules = listOf(
     dataModule
 )
 
-val appModules = coreUIModule + uiModules + domainModules + dataModules
+val appModules = dataStoreModule + coreUIModule + uiModules + domainModules + dataModules
